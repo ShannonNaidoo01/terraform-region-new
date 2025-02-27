@@ -1,0 +1,58 @@
+name: Deploy Azure Policy Regions
+
+on:
+  workflow_dispatch:
+    inputs:
+      SubscriptionId:
+        description: 'Subscription ID'
+        required: true
+        type: string
+      SubscriptionName:
+        description: 'Subscription Name'
+        required: true
+        type: string
+
+jobs:
+  deployAssignments:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Log in to Azure
+        run: |
+          az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ github.event.inputs.SubscriptionId }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+
+      - name: Plan Terraform
+        run: terraform plan -lock=false -out=tfplan -var="subscription_id=${{ github.event.inputs.SubscriptionId }}"
+        working-directory: ./
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ github.event.inputs.SubscriptionId }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          TF_VAR_subscription_id: ${{ github.event.inputs.SubscriptionId }}
+          TF_VAR_subscription_name: ${{ github.event.inputs.SubscriptionName }}
+
+      - name: Apply Terraform configuration
+        run: terraform apply -lock=false --auto-approve -var="subscription_id=${{ github.event.inputs.SubscriptionId }}"
+        working-directory: ./
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          ARM_SUBSCRIPTION_ID: ${{ github.event.inputs.SubscriptionId }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          TF_VAR_subscription_id: ${{ github.event.inputs.SubscriptionId }}
+          TF_VAR_subscription_name: ${{ github.event.inputs.SubscriptionName }}
