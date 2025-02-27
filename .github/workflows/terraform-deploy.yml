@@ -28,7 +28,7 @@ jobs:
 
       - name: Initialize Terraform
         run: terraform init
-        working-directory: ./terraform
+        working-directory: ./
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
@@ -37,7 +37,7 @@ jobs:
 
       - name: Plan Terraform
         run: terraform plan -lock=false -out=tfplan -var="subscription_id=${{ github.event.inputs.SubscriptionId }}"
-        working-directory: ./terraform
+        working-directory: ./
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
@@ -48,7 +48,7 @@ jobs:
 
       - name: Apply Terraform configuration
         run: terraform apply -lock=false --auto-approve -var="subscription_id=${{ github.event.inputs.SubscriptionId }}"
-        working-directory: ./terraform
+        working-directory: ./
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
