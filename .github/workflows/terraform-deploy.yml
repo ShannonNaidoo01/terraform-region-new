@@ -1,4 +1,4 @@
-name: Deploy Role Assignments
+name: Deploy Policy Region
 
 on:
   workflow_dispatch:
