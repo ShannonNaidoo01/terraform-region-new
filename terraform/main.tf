@@ -20,16 +20,6 @@ provider "azurerm" {
   features {}
 }
 
-variable "allowed_locations" {
-  description = "List of allowed locations"
-  type        = list(string)
-}
-
-variable "subscription_id" {
-  description = "The ID of the subscription"
-  type        = string
-}
-
 resource "azurerm_policy_definition" "deny_locations" {
   name         = "deny-locations-policy"
   policy_type  = "Custom"
