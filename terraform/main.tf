@@ -25,11 +25,6 @@ variable "allowed_locations" {
   type        = list(string)
 }
 
-variable "subscription_id" {
-  description = "The ID of the subscription"
-  type        = string
-}
-
 data "local_file" "deny_locations_policy" {
   filename = "./policies/deny_locations.json"
 }
