@@ -36,7 +36,7 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
       - name: Plan Terraform
-        run: terraform plan -lock=false -out=tfplan -var="subscription_id=${{ github.event.inputs.SubscriptionId }}"
+        run: terraform plan -lock=false -out=tfplan -var-file="denylocation.tfvars" -var="subscription_id=${{ github.event.inputs.SubscriptionId }}"
         working-directory: ./terraform
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -47,7 +47,7 @@ jobs:
           TF_VAR_subscription_name: ${{ github.event.inputs.SubscriptionName }}
 
       - name: Apply Terraform configuration
-        run: terraform apply -lock=false --auto-approve -var="subscription_id=${{ github.event.inputs.SubscriptionId }}"
+        run: terraform apply -lock=false --auto-approve -var-file="denylocation.tfvars" -var="subscription_id=${{ github.event.inputs.SubscriptionId }}"
         working-directory: ./terraform
         env:
           ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
