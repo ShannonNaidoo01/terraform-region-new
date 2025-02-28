@@ -20,13 +20,18 @@ provider "azurerm" {
   features {}
 }
 
-variable "policy_file" {
-  description = "Path to the policy JSON file"
-  default     = "./policies/deny_locations.json"
+variable "allowed_locations" {
+  description = "List of allowed locations"
+  type        = list(string)
+}
+
+variable "subscription_id" {
+  description = "The ID of the subscription"
+  type        = string
 }
 
 data "local_file" "deny_locations_policy" {
-  filename = var.policy_file
+  filename = "./policies/deny_locations.json"
 }
 
 resource "azurerm_policy_definition" "deny_locations" {
@@ -35,12 +40,23 @@ resource "azurerm_policy_definition" "deny_locations" {
   mode         = "All"
   display_name = "Deny Specific Azure Locations"
 
-  policy_rule = data.local_file.deny_locations_policy.content
+  policy_rule = jsonencode({
+    "if" = {
+      "allOf" = [
+        {
+          "field" = "location"
+          "notIn" = var.allowed_locations
+        }
+      ]
+    }
+    "then" = {
+      "effect" = "Deny"
+    }
+  })
 }
-
 
 resource "azurerm_subscription_policy_assignment" "location_policy" {
   name                 = "deny-locations-assignment"
   policy_definition_id = azurerm_policy_definition.deny_locations.id
-  subscription_id      = "/subscriptions/${var.subscription_id}"
+  subscription_id      = var.subscription_id
 }
