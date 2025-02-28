@@ -1,4 +1,4 @@
-name: Deploy Azure Policy Regions
+name: Deploy Role Assignments
 
 on:
   workflow_dispatch:

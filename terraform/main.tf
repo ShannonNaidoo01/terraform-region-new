@@ -44,5 +44,5 @@ resource "azurerm_policy_definition" "deny_locations" {
 resource "azurerm_subscription_policy_assignment" "location_policy" {
   name                 = "deny-locations-assignment"
   policy_definition_id = azurerm_policy_definition.deny_locations.id
-  subscription_id      = var.subscription_id
+  subscription_id      = "/subscriptions/${var.subscription_id}"
 }
