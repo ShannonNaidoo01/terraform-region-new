@@ -1,7 +1,7 @@
 allowed_locations = [
   "canadacentral",
   "europecentral",
-  "europewest",
+  "eastus2",
   "southamericaeast",
   "eastus"
 ]
