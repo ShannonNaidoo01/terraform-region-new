@@ -1,5 +1,5 @@
 
-# Terraform Configuration for Azure Policy
+# Terraform Configuration for Azure Policy Regions
 
 ## Explanation of the Code
 
